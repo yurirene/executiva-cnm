@@ -1,36 +1,45 @@
 <?php
 
-use App\Http\Controllers\HomeController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\{
+    DelegadoController,
+    EleicaoController,
+    AdminController,
+    AppPresencaController,
+    PresencaController,
+};
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
-Route::middleware(['auth', 'verified'])->group(function() {
-    Route::get('/delegados', [HomeController::class, 'index'])->name('delegados');
-    Route::get('/presenca', [HomeController::class, 'presenca'])->name('presenca');
-    Route::get('/importar', [HomeController::class, 'importar'])->name('importar');
-    Route::get('/delegados-datatable', [HomeController::class, 'datatable'])->name('delegados.datatable');
+Route::group(['prefix' => 'admin'], function() {
+    Auth::routes();
 });
 
 
-require __DIR__.'/auth.php';
+Route::group(['middleware' => ['auth'],'prefix' => 'admin', 'as' => 'admin.'], function () {
+
+    Route::get('/', [AdminController::class, 'index'])->name('index');
+    Route::resource('delegados', DelegadoController::class);
+    Route::get('/delegados/{delegado}/status', [DelegadoController::class, 'status'])->name('delegados.status');
+
+    Route::get('/presenca', [PresencaController::class, 'index'])->name('presenca.index');
+    Route::post('/presenca-abrir', [PresencaController::class, 'abrir'])->name('presenca.abrir');
+    Route::post('/presenca-fechar', [PresencaController::class, 'fechar'])->name('presenca.fechar');
+    Route::get('/get-presentes-sinodal', [PresencaController::class, 'getPresentesSinodal'])->name('presenca.get-presenca-sinodal');
+    Route::get('/get-presentes-federacao', [PresencaController::class, 'getPresentesFederacao'])->name('presenca.get-presenca-federacao');
+
+    Route::get('/exportar-ausentes', [PresencaController::class, 'exportarAusentes'])->name('presenca.exportar-ausentes');
+
+});
+
+Route::group(['prefix' => 'presenca'], function() {
+
+    Route::get('/', [AppPresencaController::class, 'login'])->name('app-presenca.login');
+
+    Route::post('/logar', [AppPresencaController::class, 'logar'])->name('app-presenca.logar');
+    Route::group(['middleware' => 'app-presenca.auth'], function () {
+        Route::get('/opcoes', [AppPresencaController::class, 'opcoes'])->name('app-presenca.opcoes');
+        Route::post('/votar', [AppPresencaController::class, 'votar'])->name('app-presenca.votar');
+    });
+    
+});
