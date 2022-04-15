@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Andamento;
 use App\Models\Candidato;
 use App\Models\Delegado;
+use App\Models\Parametro;
 use App\Models\Pauta;
 use App\Models\Urna;
 use App\Models\VotacaoPauta;
@@ -19,7 +20,6 @@ class AppPresencaController extends Controller
 
     public function login()
     {
-        Session::pull('delegado-presente');
         return view('app-presenca.login');
     }
 
@@ -30,26 +30,23 @@ class AppPresencaController extends Controller
             if (!$delegado) {
                 throw new Exception('Delegado não Encontrado');
             }
-            $pauta = Pauta::orderBy('id', 'desc')->first();
-            if (!$pauta) {
-                throw new Exception('Espere a Mesa Diretora Iniciar');
-            }
-            if (!$pauta->status) {
-                throw new Exception('Pauta Encerrada');
-            }
-            $votou = VotacaoPauta::where('pauta_id', $pauta->id)
-                ->where('delegado_id', $delegado->id)
-                ->count();
-            if($votou > 0){
-                throw new Exception('Você já votou nessa pauta');
+            $chamada = Parametro::first()->presenca == 1;
+            if (!$chamada) {
+                throw new Exception('Chamada encerrada, procure o Secretário-Executivo');
             }
 
-            Session::put('delegado', $delegado);
+            if($delegado->presente == 1){
+                throw new Exception('Você já registrou sua presença');
+            }
 
-            return redirect()->route('app-presenca.opcoes')
+            $delegado->update([
+                'presente' => true
+            ]);
+
+            return redirect()->route('app-presenca.login')
                 ->with('message',[
                     'type' => 'success',
-                    'message' => 'Tudo certo, '.$delegado->nome
+                    'message' => $delegado->nome .', sua presença foi registrada'
                 ]
             );
         } catch (Exception $e) {
@@ -60,52 +57,5 @@ class AppPresencaController extends Controller
                 ]
             );
         }
-    }
-
-    public function opcoes()
-    {
-        $delegado = session()->get('delegado');
-        $pauta = Pauta::where('status', true)->first();
-        $opcoes = [
-            'SIM' => 'SIM',
-            'NÃO' => 'NÃO'
-        ];
-        $cabecalho = $pauta->texto;
-        return view('app-presenca.opcoes', [
-            'cabecalho' => $cabecalho,
-            'opcoes' => $opcoes,
-            'eleitor' => $delegado,
-            'pauta' => $pauta
-        ]);
-    }
-
-    public function votar(Request $request)
-    {
-        try {    
-            $eleitor = Session::get('delegado');
-            $pauta_id = $request->pauta;
-            VotacaoPauta::create([
-                'delegado_id' => $eleitor->id,
-                'pauta_id' => $pauta_id,
-                'voto' => $request->voto
-            ]);
-            Session::pull('eleitor');
-            return redirect()->route('app-presenca.login')
-                ->with('message',[
-                    'type' => 'success',
-                    'message' => 'Voto Computado!'
-                ]
-            );
-            
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return redirect()->route('app-presenca.login')
-                ->with('message',[
-                    'type' => 'danger',
-                    'message' => 'Algo deu errado. Tente Novamente!'
-                ]
-            );
-        }
-
     }
 }

@@ -51,11 +51,5 @@ Route::group(['middleware' => ['auth'],'prefix' => 'admin', 'as' => 'admin.'], f
 Route::group(['prefix' => 'presenca'], function() {
 
     Route::get('/', [AppPresencaController::class, 'login'])->name('app-presenca.login');
-
-    Route::post('/logar', [AppPresencaController::class, 'logar'])->name('app-presenca.logar');
-    Route::group(['middleware' => 'app-presenca.auth'], function () {
-        Route::get('/opcoes', [AppPresencaController::class, 'opcoes'])->name('app-presenca.opcoes');
-        Route::post('/votar', [AppPresencaController::class, 'votar'])->name('app-presenca.votar');
-    });
-    
+    Route::post('/logar', [AppPresencaController::class, 'logar'])->name('app-presenca.logar');    
 });
