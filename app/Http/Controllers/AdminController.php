@@ -54,4 +54,24 @@ class AdminController extends Controller
                 ->withErrors('Erro ao realizar operação!');
         }
     }
+    
+    public function presenca()
+    {
+        try {
+            $parametro = Parametro::first();
+            $parametro->update([
+                'presenca' => $parametro->presenca == 1 ? 0 : 1
+            ]);
+            
+            return [
+                'mensagem' => 'Operação Realizada com sucesso!',
+                'status' => true
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'mensagem' => 'Erro ao Processar!',
+                'status' => false
+            ];
+        }
+    }
 }

@@ -231,6 +231,11 @@ return [
             'icon' => 'fas fa-fw fa-vote-yea',
         ],
         [
+            'text' => 'Delegados',
+            'url' => 'admin/delegados',
+            'icon' => 'fas fa-fw fa-users',
+        ],
+        [
             'text' => 'Parâmetros',
             'url' => 'admin/parametros',
             'icon' => 'fas fa-fw fa-cogs',

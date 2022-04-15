@@ -22,14 +22,21 @@ class DelegadoController extends Controller
 {
     public function index(DelegadoDataTable $dataTable)
     {
-        $regioes = Regiao::get()->pluck('nome', 'id');
-        $regioes_selecionadas = Regiao::where('status', 1)->get()->pluck('id');
-        $sequencias_logs = DB::table('log_importacoes')->select('sequencia')->distinct()->get()->pluck('sequencia', 'sequencia'); 
-        return $dataTable->render('admin.delegados.index', [
-            'regioes_selecionadas' => $regioes_selecionadas,
-            'regioes' => $regioes,
-            'sequencias_logs' => $sequencias_logs
-        ]);
+        return $dataTable->render('admin.delegados.index');
+    }
+
+    public function status(Delegado $delegado)
+    {
+        try {
+            $delegado->update([
+                'presente' => $delegado->presente == 1 ? 0 : 1
+            ]);
+            return redirect()->route('admin.delegados.index')
+            ->with(['message' => 'Operação Realizada com Sucesso!']);
+        } catch (\Throwable $th) {
+            return redirect()->route('admin.delegados.index')
+                ->withErrors('Erro ao realizar operação!');
+        }
     }
 
 }

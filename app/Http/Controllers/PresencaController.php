@@ -6,8 +6,10 @@ use App\DataTables\AusenteDataTable;
 use App\DataTables\AusenteFederacaoDataTable;
 use App\DataTables\PresenteDataTable;
 use App\DataTables\PresenteFederacaoDataTable;
+use App\Models\Delegado;
 use App\Models\Parametro;
 use App\Models\Presenca;
+use Illuminate\Support\Facades\DB;
 
 class PresencaController extends Controller
 {
@@ -26,6 +28,7 @@ class PresencaController extends Controller
             'ausenteFederacaoDataTable' => $ausenteFederacaoDataTable->html(),
             'totalFederacao' => $parametro->federacao,
             'totalSinodal' => $parametro->sinodal,
+            'presenca' => $parametro->presenca
         ]);
     }
 
@@ -38,7 +41,6 @@ class PresencaController extends Controller
     {
         return $dataTable->render('admin.presenca.index');
     }
-    
 
     public function ausenteSinodal(AusenteDataTable $dataTable)
     {
@@ -50,30 +52,31 @@ class PresencaController extends Controller
         return $dataTable->render('admin.presenca.index');
     }
 
-    public function abrir()
+    public function totalizadores()
     {
         try {
-            Parametro::first()->update([
-                'presenca' => true
+            $sinodal = Delegado::where('tipo', 1)
+                ->where('presente', true)
+                ->get()
+                ->count();
+
+            $federacao = Delegado::where('tipo', 2)
+                ->where('presente', true)
+                ->select(DB::raw('DISTINCT(federacao),regiao_id'))
+                ->get()
+                ->count();
+            
+            $delegado = Delegado::where('presente', true)
+                ->get()
+                ->count();
+
+            return response()->json([
+                'sinodal' => $sinodal,
+                'federacao' => $federacao,
+                'delegado' => $delegado
             ]);
-            return redirect()->route('admin.presenca.index')
-                ->with(['message' => 'Operação Realizada com Sucesso!']);
         } catch (\Throwable $th) {
-            return redirect()->route('admin.presenca.index')
-                ->withErrors('Erro ao realizar operação!');
-        }
-    }
-    public function fechar()
-    {
-        try {
-            Parametro::first()->update([
-                'presenca' => false
-            ]);
-            return redirect()->route('admin.presenca.index')
-                ->with(['message' => 'Operação Realizada com Sucesso!']);
-        } catch (\Throwable $th) {
-            return redirect()->route('admin.presenca.index')
-                ->withErrors('Erro ao realizar operação!');
+            return response()->json([]);
         }
     }
 

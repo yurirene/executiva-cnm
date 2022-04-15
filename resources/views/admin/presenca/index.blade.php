@@ -14,7 +14,7 @@
         <div class="info-box shadow">
             <span class="info-box-icon bg-secondary"><i class="fas fa-user-friends"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Quórum Federações: <b id="total_federacoes">0</b> / {{$totalFederacao}}</span>
+                <span class="info-box-text">Quórum Federações: <span id="total_federacoes">0</span> / {{$totalFederacao}}</span>
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
         <div class="info-box shadow">
             <span class="info-box-icon bg-info"><i class="fas fa-user"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Quórum Sinodais: <b id="total_sinodais">0</b> / {{$totalSinodal}}</span>
+                <span class="info-box-text">Quórum Sinodais: <span id="total_sinodais">0</span> / {{$totalSinodal}}</span>
             </div>
         </div>
     </div>
@@ -30,7 +30,7 @@
         <div class="info-box shadow">
             <span class="info-box-icon bg-secondary"><i class="fas fa-user"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Quantidade de Delegados: <b id="total_delegados">0</b></span>
+                <span class="info-box-text">Quantidade de Delegados: <span id="total_delegados">0</span></span>
             </div>
         </div>
     </div>
@@ -42,9 +42,7 @@
             <div class="info-box-content">
                 <div class="info-box-content">
                     <span class="info-box-text">Permitir Registro</span>
-                    {!! Form::open(['method' => 'POST', 'url' => '#']) !!}
-                    <input type="checkbox" data-toggle="toggle" data-onstyle="success" data-on="Ativado" data-off="Desativado" id="qrcode"  >
-                    {!! Form::close() !!}
+                    <input type="checkbox" data-toggle="toggle" data-onstyle="success" data-on="Ativado" data-off="Desativado" id="leitura" {{ $presenca == true ? 'checked' : ''  }}>
                 </div>
             </div>
         </div>
@@ -145,7 +143,38 @@
 {!! $ausenteFederacaoDataTable->scripts() !!}
 <script>
     $(document).ready(function(){
-        
+        $(function(){ $('#leitura').bootstrapToggle() });
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('[name="_token"]').val()
+                }
+            });
+            $('#leitura').on('change', function(){
+                $.ajax({
+                    url: "{{route('admin.parametros.presenca')}}",
+                    method: 'post',
+                    success: function(result){
+                        if (result.status == true) {
+                            toastr.success(result.mensagem);
+                            return;
+                        }
+                        toastr.error(result.mensagem);
+                    }
+                });
+            })
+
+            setInterval(() => {
+                $('.data-table').DataTable().ajax.reload();
+                $.ajax({
+                    url: "{{route('admin.presenca.totalizadores')}}",
+                    method: 'get',
+                    success: function(result){
+                        $('#total_sinodais').text(result.sinodal);
+                        $('#total_federacoes').text(result.federacao);
+                        $('#total_delegados').text(result.delegado);
+                    }
+                });
+            }, 5000);
     });
                                                                             
 </script>
