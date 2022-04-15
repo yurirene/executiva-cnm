@@ -32,6 +32,18 @@ class PresencaController extends Controller
         ]);
     }
 
+    public function novaContagem()
+    {
+        try {
+            DB::table('delegados')->update(['presente' => 0]);
+            return redirect()->route('admin.presenca.index')
+            ->with(['message' => 'Operação Realizada com Sucesso!']);
+        } catch (\Throwable $th) {
+            return redirect()->route('admin.presenca.index')
+                ->withErrors('Erro ao realizar operação!');
+        }
+    }
+
     public function presenteSinodal(PresenteDataTable $dataTable)
     {
         return $dataTable->render('admin.presenca.index');

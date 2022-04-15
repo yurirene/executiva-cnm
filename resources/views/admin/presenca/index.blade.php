@@ -12,7 +12,7 @@
 <div class="row mb-3">
     <div class="col-md-4">
         <div class="info-box shadow">
-            <span class="info-box-icon bg-secondary"><i class="fas fa-user-friends"></i></span>
+            <span class="info-box-icon bg-secondary"><i class="fas fa-flag"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Quórum Federações: <span id="total_federacoes">0</span> / {{$totalFederacao}}</span>
             </div>
@@ -20,7 +20,7 @@
     </div>
     <div class="col-md-4">
         <div class="info-box shadow">
-            <span class="info-box-icon bg-info"><i class="fas fa-user"></i></span>
+            <span class="info-box-icon bg-secondary"><i class="fas fa-flag"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Quórum Sinodais: <span id="total_sinodais">0</span> / {{$totalSinodal}}</span>
             </div>
@@ -28,7 +28,7 @@
     </div>
     <div class="col-md-4">
         <div class="info-box shadow">
-            <span class="info-box-icon bg-secondary"><i class="fas fa-user"></i></span>
+            <span class="info-box-icon bg-secondary"><i class="fas fa-flag"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Quantidade de Delegados: <span id="total_delegados">0</span></span>
             </div>
@@ -43,6 +43,21 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Permitir Registro</span>
                     <input type="checkbox" data-toggle="toggle" data-onstyle="success" data-on="Ativado" data-off="Desativado" id="leitura" {{ $presenca == true ? 'checked' : ''  }}>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="info-box shadow">
+            <span class="info-box-icon bg-danger"><i class="fas fa-exclamation-triangle"></i></span>
+            <div class="info-box-content">
+                <div class="info-box-content">
+                    <span class="info-box-text">Nova Contagem</span>
+                    {!! Form::open(['method' => 'POST', 'route' => 'admin.presenca.nova-contagem', 'class' => 'form-horizontal']) !!}
+                    <div class="btn-group pull-right">
+                    {!! Form::submit('Resetar', ['class' => 'btn btn-danger']) !!}
+                    </div>
+                    {!! Form::close() !!}
                 </div>
             </div>
         </div>

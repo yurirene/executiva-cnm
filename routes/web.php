@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth'],'prefix' => 'admin', 'as' => 'admin.'], f
     Route::get('/get-presentes-sinodal', [PresencaController::class, 'getPresentesSinodal'])->name('presenca.get-presenca-sinodal');
     Route::get('/get-presentes-federacao', [PresencaController::class, 'getPresentesFederacao'])->name('presenca.get-presenca-federacao');
     Route::get('/totalizadores', [PresencaController::class, 'totalizadores'])->name('presenca.totalizadores');
+    Route::post('/nova-contagem', [PresencaController::class, 'novaContagem'])->name('presenca.nova-contagem');
 
     // DATATABLE
     Route::get('presenteSinodal', [PresencaController::class, 'presenteSinodal'])->name('datatable.presente-sinodal');
