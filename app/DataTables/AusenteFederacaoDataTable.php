@@ -4,13 +4,14 @@ namespace App\DataTables;
 
 use App\Models\Delegado;
 use App\Services\RegiaoService;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class DelegadoDataTable extends DataTable
+class AusenteFederacaoDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -25,13 +26,7 @@ class DelegadoDataTable extends DataTable
             ->editColumn('regiao_id', function($sql) {
                 return RegiaoService::REGIOES[$sql->regiao_id];
             })
-            ->addColumn('action', function($sql) {
-                return view('includes.actions', [
-                    'route' => 'admin.delegados',
-                    'id' => $sql->id,
-                ]);
-            })
-            ->rawColumns(['action']);
+            ->rawColumns([]);
     }
 
     /**
@@ -42,7 +37,10 @@ class DelegadoDataTable extends DataTable
      */
     public function query(Delegado $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()
+            ->where('tipo', 2)
+            ->where('presente', false)
+            ->select(DB::raw('DISTINCT(federacao),regiao_id'));
     }
 
     /**
@@ -53,14 +51,12 @@ class DelegadoDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-            ->setTableId('delegados-datatable')
+            ->setTableId('ausente-federacao-datatable')
             ->columns($this->getColumns())
-            ->minifiedAjax()
+            ->minifiedAjax(route('admin.datatable.ausente-federacao'))
             ->dom('Bfrtip')
             ->orderBy(1)
-            ->buttons(
-                Button::make('create')->text('<i class="fas fa-plus"></i> Novo Delegado'),
-            )
+            ->buttons(['csv'])
             ->parameters([
                 "language" => [
                     "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
@@ -76,14 +72,7 @@ class DelegadoDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->addClass('text-left')->title('Ação'),
-            Column::make('codigo')->title('Código'),
-            Column::make('nome')->title('Nome'),
             Column::make('federacao')->title('Federação'),
-            Column::make('sinodal')->title('Sinodal'),
             Column::make('regiao_id')->title('Região'),
         ];
     }
@@ -95,6 +84,6 @@ class DelegadoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Delegado_' . date('YmdHis');
+        return 'Ausente_federacao_' . date('YmdHis');
     }
 }

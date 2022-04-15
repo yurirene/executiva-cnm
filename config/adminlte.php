@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'SISVOTO',
+    'title' => 'Executiva CNM',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -45,7 +45,7 @@ return [
     |
     */
 
-    'logo' => '<b>SIS<i>VOTO</i></b>',
+    'logo' => '<b><i>Executiva</i></b>',
     'logo_img' => 'img/logo_sisvoto.png',
     'logo_img_class' => 'brand-image img-circle elevation-3 bg-white',
     'logo_img_xl' => null,
@@ -229,6 +229,11 @@ return [
             'text' => 'Presença',
             'url' => 'admin/presenca',
             'icon' => 'fas fa-fw fa-vote-yea',
+        ],
+        [
+            'text' => 'Parâmetros',
+            'url' => 'admin/parametros',
+            'icon' => 'fas fa-fw fa-cogs',
         ],
     ],
 

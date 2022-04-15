@@ -30,6 +30,16 @@ Route::group(['middleware' => ['auth'],'prefix' => 'admin', 'as' => 'admin.'], f
 
     Route::get('/exportar-ausentes', [PresencaController::class, 'exportarAusentes'])->name('presenca.exportar-ausentes');
 
+    Route::get('presenteSinodal', [PresencaController::class, 'presenteSinodal'])->name('datatable.presente-sinodal');
+    Route::get('presenteFederacao', [PresencaController::class, 'presenteFederacao'])->name('datatable.presente-federacao');
+
+    Route::get('ausenteSinodal', [PresencaController::class, 'ausenteSinodal'])->name('datatable.ausente-sinodal');
+    Route::get('ausenteFederacao', [PresencaController::class, 'ausenteFederacao'])->name('datatable.ausente-federacao');
+
+    Route::get('parametros', [AdminController::class, 'parametros'])->name('parametros.index');
+    Route::post('parametros/sinodal', [AdminController::class, 'sinodal'])->name('parametros.sinodal');
+    Route::post('parametros/federacao', [AdminController::class, 'federacao'])->name('parametros.federacao');
+
 });
 
 Route::group(['prefix' => 'presenca'], function() {
