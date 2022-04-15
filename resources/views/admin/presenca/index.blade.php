@@ -156,6 +156,9 @@
                     success: function(result){
                         if (result.status == true) {
                             toastr.success(result.mensagem);
+                            if ($('#leitura').is(':checked')) {
+                                inicializar();
+                            }
                             return;
                         }
                         toastr.error(result.mensagem);
@@ -163,7 +166,22 @@
                 });
             })
 
-            setInterval(() => {
+            inicializar();
+
+            function inicializar()
+            {
+                atualizar();
+                setTimeout(function run() {
+                    atualizar();
+                    if ($('#leitura').is(':checked')) {
+                        console.log('oi');
+                        setTimeout(run, 5000);
+                    }
+                }, 5000);
+            }
+
+            function atualizar()
+            {
                 $('.data-table').DataTable().ajax.reload();
                 $.ajax({
                     url: "{{route('admin.presenca.totalizadores')}}",
@@ -174,7 +192,7 @@
                         $('#total_delegados').text(result.delegado);
                     }
                 });
-            }, 5000);
+            }
     });
                                                                             
 </script>
