@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\AusenteDataTable;
 use App\DataTables\AusenteFederacaoDataTable;
+use App\DataTables\CNMDataTable;
 use App\DataTables\PresenteDataTable;
 use App\DataTables\PresenteFederacaoDataTable;
 use App\Models\Delegado;
@@ -17,7 +18,8 @@ class PresencaController extends Controller
         PresenteDataTable $presenteDataTable, 
         PresenteFederacaoDataTable $presenteFederacaoDataTable,
         AusenteDataTable $ausenteDataTable, 
-        AusenteFederacaoDataTable $ausenteFederacaoDataTable
+        AusenteFederacaoDataTable $ausenteFederacaoDataTable,
+        CNMDataTable $CNMDataTable
     )
     {
         $parametro = Parametro::first();
@@ -26,6 +28,7 @@ class PresencaController extends Controller
             'presenteFederacaoDataTable' => $presenteFederacaoDataTable->html(),
             'ausenteDataTable' => $ausenteDataTable->html(),
             'ausenteFederacaoDataTable' => $ausenteFederacaoDataTable->html(),
+            'CNMDataTable' => $CNMDataTable->html(),
             'totalFederacao' => $parametro->federacao,
             'totalSinodal' => $parametro->sinodal,
             'presenca' => $parametro->presenca
@@ -60,6 +63,11 @@ class PresencaController extends Controller
     }
 
     public function ausenteFederacao(AusenteFederacaoDataTable $dataTable)
+    {
+        return $dataTable->render('admin.presenca.index');
+    }
+    
+    public function presenteCNM(CNMDataTable $dataTable)
     {
         return $dataTable->render('admin.presenca.index');
     }

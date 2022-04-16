@@ -76,6 +76,10 @@
                         <a class="nav-link" id="painel-ausentes-tab" data-toggle="pill" href="#painel-ausentes" 
                             role="tab" aria-controls="painel-ausentes" aria-selected="false">Ausentes</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="painel-cnm-tab" data-toggle="pill" href="#painel-cnm" 
+                            role="tab" aria-controls="painel-cnm" aria-selected="false">CNM</a>
+                    </li>
                 </ul>
             </div>
             <div class="card-body">
@@ -139,6 +143,22 @@
                             </div>
                         </div>  
                     </div>
+                    <div class="tab-pane fade" id="painel-cnm" role="tabpanel" aria-labelledby="painel-cnm-tab">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card shadow h-100">
+                                    <div class="card-header">
+                                        CNM
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            {!! $CNMDataTable->table(['class'=>'table data-table w-100']) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
                 </div>
             </div>
             
@@ -156,6 +176,7 @@
 {!! $presenteFederacaoDataTable->scripts() !!}
 {!! $ausenteDataTable->scripts() !!}
 {!! $ausenteFederacaoDataTable->scripts() !!}
+{!! $CNMDataTable->scripts() !!}
 <script>
     $(document).ready(function(){
         $(function(){ $('#leitura').bootstrapToggle() });

@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth'],'prefix' => 'admin', 'as' => 'admin.'], f
     Route::get('presenteFederacao', [PresencaController::class, 'presenteFederacao'])->name('datatable.presente-federacao');
     Route::get('ausenteSinodal', [PresencaController::class, 'ausenteSinodal'])->name('datatable.ausente-sinodal');
     Route::get('ausenteFederacao', [PresencaController::class, 'ausenteFederacao'])->name('datatable.ausente-federacao');
+    Route::get('presenteCNM', [PresencaController::class, 'presenteCNM'])->name('datatable.cnm');
 
     // PARAMETROS
     Route::get('parametros', [AdminController::class, 'parametros'])->name('parametros.index');
