@@ -10,13 +10,15 @@ class RegiaoService
     public const CENTRO_OESTE = 3;
     public const SUDESTE = 4;
     public const SUL = 5;
+    public const CNM = 6;
 
     public const REGIOES = [
         self::NORTE => 'Norte',
         self::NORDESTE => 'Nordeste',
         self::CENTRO_OESTE => 'Centro Oeste',
         self::SUDESTE => 'Sudoeste',
-        self::SUL => 'Sul'
+        self::SUL => 'Sul',
+        self::CNM => 'CNM'
     ];
 
     public const ESTADOS = [
@@ -56,6 +58,9 @@ class RegiaoService
             'Paraná',
             'Rio Grande do Sul',
             'Santa Catarina'
+        ],
+        self::CNM => [
+            'CNM',
         ]
     ];
 
