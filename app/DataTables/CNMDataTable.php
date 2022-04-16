@@ -14,8 +14,8 @@ class CNMDataTable extends DataTable
 {
     
     protected const TIPO = [
-        0 => '<span class="badge badge-success">Presente</span>',
-        1 => '<span class="badge badge-danger">Ausente</span>'
+        0 => '<span class="badge badge-danger">Ausente</span>',
+        1 => '<span class="badge badge-success">Presente</span>',
     ];
 
     /**
